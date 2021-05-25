@@ -14,68 +14,65 @@ import java.util.ArrayList;
 
 
 public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleViewHolder> {
-    private Context mContext;
-    private ArrayList<ExampleItem> mExampleList;
-    private OnItemClickListener mListener;
+    private Context context;
+    private ArrayList<Album> albumsList;
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        mListener = listener;
+        this.listener = listener;
     }
 
-    public ExampleAdapter(Context context, ArrayList<ExampleItem> exampleList) {
-        mContext = context;
-        mExampleList = exampleList;
+    public ExampleAdapter(Context context, ArrayList<Album> exampleList) {
+        this.context = context;
+        albumsList = exampleList;
     }
 
     @Override
     public ExampleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.example_item, parent, false);
+        View v = LayoutInflater.from(context).inflate(R.layout.album_item, parent, false);
         return new ExampleViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ExampleViewHolder holder, int position) {
-        ExampleItem currentItem = mExampleList.get(position);
+        Album currentItem = albumsList.get(position);
 
         String imageUrl = currentItem.getImageUrl();
         String creatorName = currentItem.getArtist();
         String albumName = currentItem.getAlbumName();
-        //int likeCount = currentItem.getLikeCount();
 
-        holder.mTextViewCreator.setText(creatorName);
+        holder.textViewArtist.setText(creatorName);
         holder.textViewAlbumName.setText(albumName);
-        //holder.mTextViewLikes.setText("Likes: " + likeCount);
-        Picasso.get().load(imageUrl).fit().centerInside().into(holder.mImageView);
+        Picasso.get().load(imageUrl).fit().centerInside().into(holder.imageView);
     }
 
     @Override
     public int getItemCount() {
-        return mExampleList.size();
+        return albumsList.size();
     }
 
     public class ExampleViewHolder extends RecyclerView.ViewHolder {
-        public ImageView mImageView;
-        public TextView mTextViewCreator;
+        public ImageView imageView;
+        public TextView textViewArtist;
         public TextView textViewAlbumName;
 
         public ExampleViewHolder(View itemView) {
             super(itemView);
-            mImageView = itemView.findViewById(R.id.image_view);
-            mTextViewCreator = itemView.findViewById(R.id.text_view_creator);
+            imageView = itemView.findViewById(R.id.image_view);
+            textViewArtist = itemView.findViewById(R.id.text_view_artist);
             textViewAlbumName = itemView.findViewById(R.id.text_view_albumName);
-            //mTextViewLikes = itemView.findViewById(R.id.text_view_likes);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mListener != null) {
+                    if (listener != null) {
                         int position = getAdapterPosition();
                         if (position != RecyclerView.NO_POSITION) {
-                            mListener.onItemClick(position);
+                            listener.onItemClick(position);
                         }
                     }
                 }

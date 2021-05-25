@@ -1,18 +1,23 @@
 package com.cb.seventhwave.topalbumviewer;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
-import static com.cb.seventhwave.topalbumviewer.MainActivity.IMAGEURL;
-import static com.cb.seventhwave.topalbumviewer.MainActivity.ALBUMNAME;
-import static com.cb.seventhwave.topalbumviewer.MainActivity.ARTIST;
-import static com.cb.seventhwave.topalbumviewer.MainActivity.RELEASEDATE;
-import static com.cb.seventhwave.topalbumviewer.MainActivity.ARTISTURL;
-import static com.cb.seventhwave.topalbumviewer.MainActivity.EXPLICIT;
+import static com.cb.seventhwave.topalbumviewer.ViewModel.IMAGEURL;
+import static com.cb.seventhwave.topalbumviewer.ViewModel.ALBUMNAME;
+import static com.cb.seventhwave.topalbumviewer.ViewModel.ARTIST;
+import static com.cb.seventhwave.topalbumviewer.ViewModel.POSITION;
+import static com.cb.seventhwave.topalbumviewer.ViewModel.RELEASEDATE;
+import static com.cb.seventhwave.topalbumviewer.ViewModel.ARTISTURL;
+import static com.cb.seventhwave.topalbumviewer.ViewModel.EXPLICIT;
 
 import java.net.URL;
 
@@ -27,6 +32,12 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         Intent intent = getIntent();
+        int position = intent.getIntExtra(POSITION,-1);
+        if(position != -1)
+        {
+
+        }
+
         String imageUrl = intent.getStringExtra(IMAGEURL);
         String artist = intent.getStringExtra(ARTIST);
         String releaseDate = intent.getStringExtra(RELEASEDATE);
@@ -47,7 +58,19 @@ public class DetailActivity extends AppCompatActivity {
         textViewAlbumName.setText(albumName);
         textViewArtist.setText(artist);
         textViewReleaseDate.setText(releaseDate);
-        textViewArtistUrl.setText(artistURL);
+
+        SpannableString content = new SpannableString(artistURL);
+        content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+        textViewArtistUrl.setText(content);
+        
+        textViewArtistUrl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(artistURL));
+                startActivity(intent);
+            }
+        });
 
         if(!explicit)
             textViewExplicit.setVisibility(TextView.GONE); //View goes away and does not take space for layout
