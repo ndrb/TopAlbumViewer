@@ -11,7 +11,8 @@
         android:id="@+id/image_view_detail"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/album_art" />
 
     <TextView
         android:id="@+id/text_view_albumName_detail"
@@ -19,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:text="Album Name"
+        android:text="@string/album_name"
         android:textColor="@android:color/black"
         android:textSize="40sp" />
 
@@ -29,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:text="Artist Name"
+        android:text="@string/artist_name"
         android:textColor="@android:color/black"
         android:textSize="30sp" />
 
@@ -39,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:text="Release Date"
+        android:text="@string/release_date"
         android:textColor="@android:color/black"
         android:textSize="20sp" />
 
@@ -49,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:text="Artist URL"
+        android:text="@string/artist_url"
         android:textColor="@drawable/text_color"
         android:textSize="20sp" />
 
@@ -59,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:text="Explicit"
+        android:text="@string/explicit"
         android:textColor="@android:color/black"
         android:textSize="20sp" />
 

@@ -16,13 +16,14 @@
             android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:src="@mipmap/ic_launcher" />
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/album_art" />
 
         <TextView
             android:id="@+id/text_view_albumName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Album Name"
+            android:text="@string/album_name"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
 
@@ -30,9 +31,17 @@
             android:id="@+id/text_view_artist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Artist"
+            android:text="@string/artist"
             android:textColor="@android:color/black"
             android:textSize="20sp" />
+
+
+        <ImageView
+            android:id="@+id/favorite_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_favorite_border_24"
+            android:contentDescription="@string/favorite_logo" />
 
 
     </LinearLayout>

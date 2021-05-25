@@ -3,5 +3,15 @@
     <string name="action_settings">Settings</string>
 
     <string name="no_data_available">Could not fetch data :(</string>
+    <string name="artist_url">Artist URL</string>
+    <string name="explicit">Explicit</string>
+    <string name="release_date">Release Date</string>
+    <string name="artist_name">Artist Name</string>
+    <string name="album_name">Album Name</string>
+    <string name="fetch">Fetch</string>
+    <string name="albums_to_fetch">Albums to fetch:</string>
+    <string name="artist">Artist</string>
+    <string name="favorite_logo">favorite logo</string>
+    <string name="album_art">album art</string>
 
 </resources>

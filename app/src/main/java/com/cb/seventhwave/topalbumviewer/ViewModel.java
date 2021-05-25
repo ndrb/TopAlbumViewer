@@ -1,7 +1,9 @@
 package com.cb.seventhwave.topalbumviewer;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ViewModel
 {
@@ -34,14 +37,29 @@ public class ViewModel
     private ArrayList<Album> exampleList;
     private RequestQueue requestQueue;
     private int requestCount;
+    public static AlbumDatabase albumDb;
+
+    private AlbumDatabase db;
 
     ViewModel(Context context)
     {
+        //Declare initial data
+        requestCount = 25;
         if(exampleList == null)
         {
             exampleList = new ArrayList<Album>();
         }
-        requestCount = 25;
+
+        albumDb = Room.databaseBuilder(context, AlbumDatabase.class, "album").allowMainThreadQueries().build();
+
+        //If there is data saved in the room then load it into list
+        ArrayList<Album> holderArrayList = parseRoom();
+        if(holderArrayList.size() != 0)
+        {
+            exampleList = holderArrayList;
+            requestCount = holderArrayList.size();
+        }
+
         requestQueue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
@@ -61,12 +79,74 @@ public class ViewModel
         this.requestCount = requestCount;
     }
 
-    public void parseJSON(final CustomListener<String> listener)
+    public void getData(final CustomListener<String> listener)
     {
-        //String realUrl = "https://rss.itunes.apple.com/api/v1/us/apple-music/top-albums/all/25/explicit.json/";
+        //If there is data saved in the room then load it into list
+        ArrayList<Album> holderArrayList = parseRoom();
+        if (holderArrayList.size() != 0) {
+            exampleList = holderArrayList;
+            requestCount = holderArrayList.size();
+            listener.getResult("200");
+        }
+        else
+        {
+            parseJSON( new CustomListener<String>()
+            {
+                @Override
+                public void getResult(String result)
+                {
+                    if (result.equals("200"))
+                    {
+                        listener.getResult("200");
+                    }
+                    else
+                    {
+                        listener.getResult("300");
+                    }
+                }
+            });
+        }
+    }
+
+
+    public void refreshData(final CustomListener<String> listener)
+    {
+        parseJSON( new CustomListener<String>()
+        {
+            @Override
+            public void getResult(String result)
+            {
+                if (result.equals("200"))
+                {
+                    listener.getResult("200");
+                }
+                else
+                {
+                    listener.getResult("300");
+                }
+            }
+        });
+    }
+
+    private ArrayList<Album> parseRoom()
+    {
+        List<Album> listOfAlbums = albumDb.albumDao().getAllData();
+        ArrayList<Album> arrayListAlbums = new ArrayList<Album>();
+
+        if(listOfAlbums.size() != 0)
+        {
+            arrayListAlbums.addAll(listOfAlbums);
+        }
+        return arrayListAlbums;
+    }
+
+    private void parseJSON(final CustomListener<String> listener)
+    {
         String realUrl = "https://rss.itunes.apple.com/api/v1/us/apple-music/top-albums/all/"+requestCount+"/explicit.json/";
 
-        exampleList = new ArrayList<Album>();
+        ArrayList<Album> holderArrayList = new ArrayList<Album>();
+        //exampleList = new ArrayList<Album>();
+        albumDb.albumDao().nukeTable();//Reset database
 
         JsonObjectRequest realRequest = new JsonObjectRequest(Request.Method.GET, realUrl, null,
                 new Response.Listener<JSONObject>() {
@@ -96,6 +176,7 @@ public class ViewModel
                             {
                                 JSONObject hit = results.getJSONObject(i);
 
+                                int albumId = hit.getInt("id");
                                 String creatorName = hit.getString("artistName");
                                 String imageUrl = hit.getString("artworkUrl100");
                                 String releaseDate = hit.getString("releaseDate");
@@ -108,14 +189,29 @@ public class ViewModel
                                     }
                                 }
                                 catch(JSONException e)
-                                {}
+                                {
+                                    listener.getResult("300");
+                                }
 
                                 String artistURL = hit.getString("artistUrl");
 
                                 Log.i(TAG, "Adding element to list");
-                                exampleList.add(new Album(imageUrl, creatorName, releaseDate, albumName, explicit, artistURL, false));
+
+                                Album album = new Album(albumId, imageUrl, creatorName, releaseDate, albumName, explicit, artistURL, false, i);
+                                holderArrayList.add(album);
                             }
-                            listener.getResult("done");
+
+                            //Now that our new fetched list is complete, do a merge
+                            mergeFavoriteAttribute(exampleList, holderArrayList);
+
+                            exampleList = holderArrayList;
+
+                            for(Album alb : exampleList)
+                            {
+                                albumDb.albumDao().addData(alb);
+                            }
+
+                            listener.getResult("200");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -127,10 +223,26 @@ public class ViewModel
             }
         });
 
-        //Log.i(TAG, "About to make volley request");
         requestQueue.add(realRequest);
-        //Log.i(TAG, "Finished processing list, size: "+exampleList.size());
+    }
 
+    private void mergeFavoriteAttribute(ArrayList<Album> originalArrayList, ArrayList<Album> newArrayList)
+    {
+        //Iterate through new list
+        for(Album album : newArrayList)
+        {
+            //If the album has been fetched in the past, there might be a Favorite attribute set
+            if(originalArrayList.contains(album))
+            {
+                //Log.i(TAG, "AFFECT");
+                //Find the favorite attribute of the album
+                int position = originalArrayList.indexOf(album);
+                boolean fav = originalArrayList.get(position).isFavorite();
+
+                int newPosition = newArrayList.indexOf(album);
+                newArrayList.get(newPosition).setFavorite(fav);
+            }
+        }
     }
 
 }

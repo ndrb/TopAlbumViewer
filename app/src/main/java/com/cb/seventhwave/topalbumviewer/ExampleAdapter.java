@@ -38,7 +38,8 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
     }
 
     @Override
-    public void onBindViewHolder(ExampleViewHolder holder, int position) {
+    public void onBindViewHolder(ExampleViewHolder holder, int position)
+    {
         Album currentItem = albumsList.get(position);
 
         String imageUrl = currentItem.getImageUrl();
@@ -48,6 +49,39 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
         holder.textViewArtist.setText(creatorName);
         holder.textViewAlbumName.setText(albumName);
         Picasso.get().load(imageUrl).fit().centerInside().into(holder.imageView);
+
+        if(currentItem.isFavorite())
+        {
+            holder.favoriteView.setImageResource(R.drawable.ic_baseline_favorite_24);
+        }
+        else
+        {
+            holder.favoriteView.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+        }
+
+        holder.favoriteView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                //If it's already been favourited then we want to un-favorite
+
+                //Ideally I would put one single db access object in ViewModel and fetch it from there
+                if(currentItem.isFavorite())
+                {
+                    currentItem.setFavorite(false);
+                    holder.favoriteView.setImageResource(R.drawable.ic_baseline_favorite_border_24);
+                    MainActivity.albumDb.albumDao().updateAlbum(currentItem);
+
+                }
+                else {
+                    currentItem.setFavorite(true);
+                    holder.favoriteView.setImageResource(R.drawable.ic_baseline_favorite_24);
+                    MainActivity.albumDb.albumDao().updateAlbum(currentItem);
+                }
+
+
+            }
+        });
     }
 
     @Override
@@ -55,16 +89,19 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
         return albumsList.size();
     }
 
-    public class ExampleViewHolder extends RecyclerView.ViewHolder {
+    public class ExampleViewHolder extends RecyclerView.ViewHolder
+    {
         public ImageView imageView;
         public TextView textViewArtist;
         public TextView textViewAlbumName;
+        public ImageView favoriteView;
 
         public ExampleViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_view);
             textViewArtist = itemView.findViewById(R.id.text_view_artist);
             textViewAlbumName = itemView.findViewById(R.id.text_view_albumName);
+            favoriteView = itemView.findViewById(R.id.favorite_view);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

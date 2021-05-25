@@ -19,7 +19,7 @@
             android:id="@+id/fetch_count_view"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Albums to fetch:"
+            android:text="@string/albums_to_fetch"
             android:layout_weight="2"
             android:textSize="20sp"
             android:paddingVertical="10sp"
@@ -33,14 +33,14 @@
             android:layout_width="wrap_content"
             android:inputType="number"
             android:layout_weight="2"
-            />
+            android:autofillHints="25" />
 
 
         <Button
             android:id="@+id/fetch_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fetch"
+            android:text="@string/fetch"
             android:layout_weight="1"
             android:onClick="myAlbumFetchClickHandler"
         />

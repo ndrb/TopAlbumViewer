@@ -1,5 +1,6 @@
 package com.cb.seventhwave.topalbumviewer;
 
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -34,17 +35,20 @@ public class MainActivity extends AppCompatActivity implements ExampleAdapter.On
     private TextView emptyErrorView;
     private EditText fetchCountView;
     private Button buttonFetch;
-    ViewModel vm;
+    public ViewModel vm;
+    public static AlbumDatabase albumDb; //Only use this for updating favorite
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        albumDb = Room.databaseBuilder(getApplicationContext(), AlbumDatabase.class, "album").allowMainThreadQueries().build();
 
         loadUiElements();
 
         vm = new ViewModel(this);
+
 
         // If we have a saved state then we can restore it now
         if (savedInstanceState != null)
@@ -60,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements ExampleAdapter.On
 
         else
         {
-            fetchCountView.setText(vm.getRequestCount()+"");
+            fetchCountView.setText(vm.getRequestCount()+""); //By default 25
             updateList();
         }
     }
@@ -124,20 +128,39 @@ public class MainActivity extends AppCompatActivity implements ExampleAdapter.On
             if(fetchCountInt != 0)// && fetchCountInt!= vm.getRequestCount())
             {
                 vm.setRequestCount(fetchCountInt);
-                updateList();
+                vm.refreshData( new CustomListener<String>()
+                {
+                    @Override
+                    public void getResult(String result)
+                    {
+                        if (result.equals("200"))
+                        {
+                            emptyErrorView.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.VISIBLE);
+                            configRecycler();
+                        }
+                        else
+                        {
+                            recyclerView.setVisibility(View.GONE);
+                            emptyErrorView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
             }
         }
     }
 
     private void updateList()
     {
-        vm.parseJSON( new CustomListener<String>()
+        vm.getData( new CustomListener<String>()
         {
             @Override
             public void getResult(String result)
             {
-                if (result.equals("done"))
+                if (result.equals("200"))
                 {
+                    emptyErrorView.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
                     configRecycler();
                 }
                 else
