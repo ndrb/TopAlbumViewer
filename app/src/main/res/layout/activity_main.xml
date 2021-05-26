@@ -21,9 +21,9 @@
             android:layout_height="match_parent"
             android:text="@string/albums_to_fetch"
             android:layout_weight="2"
-            android:textSize="20sp"
-            android:paddingVertical="10sp"
-            android:paddingHorizontal="10sp"
+            android:textSize="@dimen/large_text_size"
+            android:paddingVertical="@dimen/album_name_padding"
+            android:paddingHorizontal="@dimen/album_name_padding"
             />
 
 
@@ -33,7 +33,8 @@
             android:layout_width="wrap_content"
             android:inputType="number"
             android:layout_weight="2"
-            android:autofillHints="25" />
+            android:autofillHints="25"
+            android:labelFor="@+id/fetch_count_view"/>
 
 
         <Button
@@ -60,7 +61,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50sp"
+        android:layout_marginTop="@dimen/top_margin"
         />
 
 </android.support.constraint.ConstraintLayout>

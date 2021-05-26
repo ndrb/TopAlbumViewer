@@ -50,16 +50,22 @@ public class MainActivity extends AppCompatActivity implements ExampleAdapter.On
         vm = new ViewModel(this);
 
 
+        //We could put this code in onRestoreInstanceState and we would not need null checking
         // If we have a saved state then we can restore it now
         if (savedInstanceState != null)
         {
-            ArrayList<Album> albums = (ArrayList<Album>) savedInstanceState.getSerializable(STATELIST);
-            int fetchCount = savedInstanceState.getInt(FETCHCOUNT);
-
-            vm.setExampleList(albums);
-            vm.setRequestCount(fetchCount);
-
-            configRecycler();
+            try
+            {
+                ArrayList<Album> albums = (ArrayList<Album>) savedInstanceState.getSerializable(STATELIST);
+                int fetchCount = savedInstanceState.getInt(FETCHCOUNT);
+                vm.setExampleList(albums);
+                vm.setRequestCount(fetchCount);
+                configRecycler();
+            }
+            catch(ClassCastException cce)
+            {
+                Log.i(TAG, "Could not fetch data from saved instance");
+            }
         }
 
         else
@@ -67,12 +73,6 @@ public class MainActivity extends AppCompatActivity implements ExampleAdapter.On
             fetchCountView.setText(vm.getRequestCount()+""); //By default 25
             updateList();
         }
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
     }
 
     @Override
@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements ExampleAdapter.On
     {
         emptyErrorView = (TextView) findViewById(R.id.empty_error_view);
         fetchCountView = (EditText) findViewById(R.id.fetch_count_text_input);
-        buttonFetch = (Button) findViewById(R.id.fetch_button);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 

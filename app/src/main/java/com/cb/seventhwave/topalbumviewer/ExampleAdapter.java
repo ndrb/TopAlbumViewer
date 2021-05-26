@@ -70,14 +70,13 @@ public class ExampleAdapter extends RecyclerView.Adapter<ExampleAdapter.ExampleV
                 {
                     currentItem.setFavorite(false);
                     holder.favoriteView.setImageResource(R.drawable.ic_baseline_favorite_border_24);
-                    MainActivity.albumDb.albumDao().updateAlbum(currentItem);
 
                 }
                 else {
                     currentItem.setFavorite(true);
                     holder.favoriteView.setImageResource(R.drawable.ic_baseline_favorite_24);
-                    MainActivity.albumDb.albumDao().updateAlbum(currentItem);
                 }
+                MainActivity.albumDb.albumDao().updateAlbum(currentItem);
 
 
             }

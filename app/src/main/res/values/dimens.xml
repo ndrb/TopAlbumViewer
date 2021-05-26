@@ -1,3 +1,10 @@
 <resources>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_margin">16sp</dimen>
+    <dimen name="extra_extra_large_text_size">40sp</dimen>
+    <dimen name="extra_large_text_size">30sp</dimen>
+    <dimen name="large_text_size">20sp</dimen>
+    <dimen name="album_name_padding">10sp</dimen>
+    <dimen name="top_margin">50sp</dimen>
+    <dimen name="card_margin">8sp</dimen>
+    <dimen name="image_layout">200sp</dimen>
 </resources>

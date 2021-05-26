@@ -3,19 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    app:cardCornerRadius="8dp">
+    android:layout_margin="@dimen/card_margin"
+    app:cardCornerRadius="@dimen/card_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="@dimen/fab_margin">
 
         <ImageView
             android:id="@+id/image_view"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="@dimen/image_layout"
             android:src="@mipmap/ic_launcher"
             android:contentDescription="@string/album_art" />
 
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="@string/album_name"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="@dimen/large_text_size" />
 
         <TextView
             android:id="@+id/text_view_artist"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:text="@string/artist"
             android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            android:textSize="@dimen/large_text_size" />
 
 
         <ImageView
